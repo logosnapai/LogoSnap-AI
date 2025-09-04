@@ -1,0 +1,333 @@
+
+import React, { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { GenerateImage } from "@/integrations/Core";
+import ImageStorage from "../components/ImageStorage";
+
+import SplashScreen from "../components/SplashScreen";
+import TabNavigation from "../components/TabNavigation";
+import PaymentWall from "../components/PaymentWall";
+import PromptInput from "../components/PromptInput";
+import LogoGrid from "../components/LogoGrid";
+import FavoritesView from "../components/FavoritesView";
+import FavoriteWarningModal from "../components/FavoriteWarningModal";
+
+export default function Home() {
+  const [showSplash, setShowSplash] = useState(true);
+  const [hasPaid, setHasPaid] = useState(false);
+  const [activeTab, setActiveTab] = useState('generate');
+  const [creditsRemaining, setCreditsRemaining] = useState(0);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [currentGenerationLogos, setCurrentGenerationLogos] = useState([]);
+  const [favoriteLogos, setFavoriteLogos] = useState([]);
+  const [favoriteCount, setFavoriteCount] = useState(0);
+  const [showFavoriteWarning, setShowFavoriteWarning] = useState(false);
+  const [tempImageUrls, setTempImageUrls] = useState([]);
+
+  const cleanupTempUrls = useCallback(() => {
+    // Revoke temporary object URLs to free memory
+    tempImageUrls.forEach(url => URL.revokeObjectURL(url));
+    setTempImageUrls([]);
+  }, [tempImageUrls]);
+
+  const loadFavorites = async () => {
+    try {
+      const favorites = await ImageStorage.getAllFavorites();
+      setFavoriteLogos(favorites);
+      setFavoriteCount(favorites.length);
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+    }
+  };
+
+  useEffect(() => {
+    const initializeApp = async () => {
+      // Check payment status and credits
+      const paid = localStorage.getItem('logosnap_paid') === 'true';
+      const credits = parseInt(localStorage.getItem('logosnap_credits') || '0');
+      
+      setHasPaid(paid);
+      setCreditsRemaining(credits);
+      
+      // Load favorites from IndexedDB
+      await loadFavorites();
+    };
+
+    initializeApp();
+  }, []);
+
+  const handlePaymentSuccess = () => {
+    setHasPaid(true);
+    setCreditsRemaining(5);
+    localStorage.setItem('logosnap_paid', 'true');
+    localStorage.setItem('logosnap_credits', '5');
+  };
+
+  const handleGenerate = async (prompt) => {
+    if (creditsRemaining <= 0) return;
+    
+    setIsGenerating(true);
+    
+    // Clean up previous temporary images
+    cleanupTempUrls();
+    
+    const generatedLogos = [];
+    const newTempUrls = [];
+    const maxAttemptsPerLogo = 3;
+
+    try {
+      for (let i = 0; i < 4; i++) {
+        let validLogo = null;
+        let attempts = 0;
+        
+        while (validLogo === null && attempts < maxAttemptsPerLogo) {
+          try {
+            const result = await GenerateImage({
+              prompt: `${prompt}. Logo design ${i + 1}. Clean, professional, minimalist style. Transparent background. 512x512 pixels. PNG format. High quality vector-style illustration.`
+            });
+            
+            if (result && 
+                result.url && 
+                typeof result.url === 'string' && 
+                result.url.trim() !== '' &&
+                (result.url.startsWith('http://') || result.url.startsWith('https://'))) {
+              
+              // Fetch the image blob immediately
+              const imageBlob = await ImageStorage.urlToBlob(result.url);
+              const tempUrl = URL.createObjectURL(imageBlob);
+              newTempUrls.push(tempUrl);
+              
+              validLogo = {
+                id: Date.now() + i + Math.random(),
+                url: tempUrl,
+                blob: imageBlob,
+                prompt: prompt,
+                createdAt: new Date().toISOString()
+              };
+
+            } else {
+              console.warn(`Logo ${i + 1} (attempt ${attempts + 1}) - Invalid result:`, result);
+            }
+          } catch (error) {
+            console.error(`Logo ${i + 1} (attempt ${attempts + 1}) - GenerateImage error:`, error);
+          }
+          
+          attempts++;
+        }
+
+        if (validLogo) {
+          generatedLogos.push(validLogo);
+        } else {
+          console.error(`Failed to generate valid logo ${i + 1} after ${maxAttemptsPerLogo} attempts`);
+          setIsGenerating(false);
+          alert("Something went wrong. Please restart the app and try again.");
+          return;
+        }
+      }
+
+      if (generatedLogos.length === 4) {
+        // Store temporary URLs for cleanup later
+        setTempImageUrls(newTempUrls);
+        
+        // Set current generation logos for display (temporary, in memory only)
+        setCurrentGenerationLogos(generatedLogos);
+        
+        const newCredits = creditsRemaining - 1;
+        setCreditsRemaining(newCredits);
+        localStorage.setItem('logosnap_credits', newCredits.toString());
+      } else {
+        console.error("Unexpected: Generated logos count not 4. Credits not deducted.");
+        alert("Something went wrong. Please restart the app and try again.");
+      }
+      
+    } catch (error) {
+      console.error('Unhandled error in handleGenerate:', error);
+      alert("Something went wrong. Please restart the app and try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleBookmark = async (logoId) => {
+    const logo = currentGenerationLogos.find(l => l.id === logoId);
+    if (!logo) return;
+    
+    const isAlreadyFavorite = favoriteLogos.some(f => f.id === logoId);
+    
+    if (isAlreadyFavorite) {
+      // Remove from favorites
+      await ImageStorage.removeFavoriteImage(logoId);
+      await loadFavorites();
+    } else {
+      // Check if at capacity
+      if (await ImageStorage.isAtCapacity()) {
+        setShowFavoriteWarning(true);
+        return;
+      }
+      
+      // Add to favorites in IndexedDB
+      try {
+        await ImageStorage.saveFavoriteImage(logo);
+        await loadFavorites();
+      } catch (error) {
+        console.error('Error saving favorite:', error);
+        alert('Error saving favorite. Please try again.');
+      }
+    }
+  };
+
+  const handleDownload = async (logo) => {
+    try {
+      let imageBlob;
+      
+      // Check if this is a favorite (with blob) or temporary (need to fetch)
+      if (logo.blob) {
+        imageBlob = logo.blob;
+      } else {
+        // For favorites loaded from IndexedDB, we need to get the blob
+        const favorite = favoriteLogos.find(f => f.id === logo.id);
+        imageBlob = favorite ? favorite.blob : await ImageStorage.urlToBlob(logo.url);
+      }
+      
+      ImageStorage.downloadBlob(imageBlob, `logosnap-logo-${logo.id}.png`);
+    } catch (error) {
+      console.error('Error downloading logo:', error);
+      alert('Error downloading logo. Please try again.');
+    }
+  };
+
+  const handleRemoveFavorite = async (logoId) => {
+    await ImageStorage.removeFavoriteImage(logoId);
+    await loadFavorites();
+  };
+
+  const isFavorite = (logoId) => {
+    return favoriteLogos.some(f => f.id === logoId);
+  };
+
+  const handleViewFavorites = () => {
+    setShowFavoriteWarning(false);
+    setActiveTab('favorites');
+  };
+
+  const handleCancelFavoriteWarning = () => {
+    setShowFavoriteWarning(false);
+  };
+
+  // Cleanup URLs on unmount
+  useEffect(() => {
+    return () => {
+      cleanupTempUrls();
+    };
+  }, [cleanupTempUrls]);
+
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-black pb-24">
+      {/* Header */}
+      <div className="pt-12 pb-8 text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-3xl font-black gold-gradient mb-2"
+        >
+          LogoSnap AI
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-gray-400 font-medium"
+        >
+          Create stunning logos with AI
+        </motion.p>
+      </div>
+
+      {/* Main Content */}
+      <AnimatePresence mode="wait">
+        {!hasPaid ? (
+          <motion.div
+            key="payment"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="flex items-center justify-center min-h-96"
+          >
+            <PaymentWall onPaymentSuccess={handlePaymentSuccess} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="app"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {activeTab === 'generate' && (
+              <div>
+                <PromptInput
+                  onGenerate={handleGenerate}
+                  isGenerating={isGenerating}
+                  creditsRemaining={creditsRemaining}
+                />
+                {currentGenerationLogos.length > 0 && (
+                  <LogoGrid
+                    logos={currentGenerationLogos}
+                    onBookmark={handleBookmark}
+                    isFavorite={isFavorite}
+                    onDownload={handleDownload}
+                  />
+                )}
+              </div>
+            )}
+
+            {activeTab === 'favorites' && (
+              <FavoritesView
+                favorites={favoriteLogos}
+                onDownload={handleDownload}
+                onRemoveFavorite={handleRemoveFavorite}
+              />
+            )}
+
+            {activeTab === 'try-again' && (
+              <div>
+                <PromptInput
+                  onGenerate={handleGenerate}
+                  isGenerating={isGenerating}
+                  creditsRemaining={creditsRemaining}
+                />
+                {currentGenerationLogos.length > 0 && (
+                  <LogoGrid
+                    logos={currentGenerationLogos}
+                    onBookmark={handleBookmark}
+                    isFavorite={isFavorite}
+                    onDownload={handleDownload}
+                  />
+                )}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Tab Navigation */}
+      {hasPaid && (
+        <TabNavigation
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          creditsRemaining={creditsRemaining}
+          favoritesCount={favoriteCount}
+        />
+      )}
+
+      {/* Favorite Warning Modal */}
+      <FavoriteWarningModal
+        isOpen={showFavoriteWarning}
+        onViewFavorites={handleViewFavorites}
+        onCancel={handleCancelFavoriteWarning}
+      />
+    </div>
+  );
+}
