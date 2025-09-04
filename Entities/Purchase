@@ -1,0 +1,39 @@
+{
+  "name": "Purchase",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "type": "number",
+      "description": "Purchase amount in USD"
+    },
+    "credits_purchased": {
+      "type": "number",
+      "description": "Number of logo generation credits purchased"
+    },
+    "stripe_session_id": {
+      "type": "string",
+      "description": "Stripe checkout session ID"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "amount",
+    "credits_purchased"
+  ],
+  "rls": {
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}
