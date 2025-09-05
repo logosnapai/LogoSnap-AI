@@ -1,16 +1,15 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GenerateImage } from "@/integrations/Core";
-import ImageStorage from "../components/ImageStorage";
+import ImageStorage from "@/components/ImageStorage";
 
-import SplashScreen from "../components/SplashScreen";
-import TabNavigation from "../components/TabNavigation";
-import PaymentWall from "../components/PaymentWall";
-import PromptInput from "../components/PromptInput";
-import LogoGrid from "../components/LogoGrid";
-import FavoritesView from "../components/FavoritesView";
-import FavoriteWarningModal from "../components/FavoriteWarningModal";
+import SplashScreen from "@/components/SplashScreen";
+import TabNavigation from "@/components/TabNavigation";
+import PaymentWall from "@/components/PaymentWall";
+import PromptInput from "@/components/PromptInput";
+import LogoGrid from "@/components/LogoGrid";
+import FavoritesView from "@/components/FavoritesView";
+import FavoriteWarningModal from "@/components/FavoriteWarningModal";
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
