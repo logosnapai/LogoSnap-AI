@@ -1,13 +1,54 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Sparkles, Wand2 } from "lucide-react";
+
+// Simple Textarea component to replace shadcn dependency
+const Textarea = ({ value, onChange, placeholder, className = "", ...props }) => {
+  return (
+    <textarea 
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className={`w-full p-3 border rounded-lg resize-none focus:outline-none focus:ring-2 ${className}`}
+      {...props}
+    />
+  );
+};
+
+// Simple Button component to replace shadcn dependency
+const Button = ({ children, onClick, disabled, variant = "default", className = "", ...props }) => {
+  const baseStyles = "px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none";
+  const variants = {
+    default: "bg-blue-600 hover:bg-blue-700 text-white",
+    outline: "border border-gray-300 bg-white hover:bg-gray-50 text-gray-700"
+  };
+  
+  return (
+    <button 
+      className={`${baseStyles} ${variants[variant]} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'} ${className}`}
+      onClick={onClick}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Simple icons to replace lucide-react
+const Sparkles = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+  </svg>
+);
+
+const Wand2 = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 4V2m0 2v2m0-2h2m-2 0h-2m0 16l-4-4 4-4m6 8l4-4-4-4" />
+  </svg>
+);
 
 export default function PromptInput({ onGenerate, isGenerating, creditsRemaining }) {
   const [prompt, setPrompt] = useState("");
-
   const defaultPrompt = "Build me a recognizable symbol like Apple. No text. Make it iconic, simple, and modern with unique visual identity. Use symbolism or abstract forms. No gradients, think versatile and brandable.";
 
   const handleGenerate = () => {
@@ -83,7 +124,8 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
             </p>
             <Button
               onClick={() => {
-                localStorage.removeItem('logosnap_paid');
+                // REMOVED localStorage for Bolt.new compatibility
+                // Will trigger parent component to show paywall again
                 window.location.reload();
               }}
               className="gold-bg text-black font-bold px-6 py-2 rounded-xl hover:shadow-lg transition-all duration-300"
