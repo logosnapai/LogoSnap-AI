@@ -1,15 +1,50 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Download, Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import ConfirmationModal from "./ConfirmationModal";
+
+// Simple Button component to replace shadcn dependency
+const Button = ({ children, onClick, size = "default", className = "", ...props }) => {
+  const sizeClasses = {
+    default: "px-4 py-2",
+    sm: "px-2 py-1 text-sm"
+  };
+  
+  return (
+    <button 
+      className={`${sizeClasses[size]} rounded-lg font-medium transition-colors focus:outline-none hover:opacity-90 ${className}`}
+      onClick={onClick}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Simple icons to replace lucide-react
+const Star = ({ className }) => (
+  <svg className={className} fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+  </svg>
+);
+
+const Download = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+);
+
+const Heart = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+  </svg>
+);
 
 export default function FavoritesView({ favorites, onDownload, onRemoveFavorite }) {
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, logoId: null });
   
   // Sort favorites by when they were favorited (newest first)
   const sortedFavorites = [...favorites].sort((a, b) => 
-    new Date(b.favoritedAt) - new Date(a.favoritedAt)
+    new Date(b.favoritedAt || b.createdAt || 0) - new Date(a.favoritedAt || a.createdAt || 0)
   );
 
   const handleStarClick = (logoId) => {
