@@ -1,7 +1,38 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, CreditCard, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+// Simple icons to replace lucide-react
+const Sparkles = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+  </svg>
+);
+
+const CreditCard = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+  </svg>
+);
+
+const Check = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+  </svg>
+);
+
+// Simple Button component
+const Button = ({ children, onClick, disabled, className = "", ...props }) => {
+  return (
+    <button 
+      className={`px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'} ${className}`}
+      onClick={onClick}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
 
 export default function PaymentWall({ onPaymentSuccess }) {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -9,12 +40,10 @@ export default function PaymentWall({ onPaymentSuccess }) {
   const handlePayment = async () => {
     setIsProcessing(true);
     
-    // Simulate Stripe payment process
+    // SYNTHETIC PAYMENT - Just simulate success for testing
     setTimeout(() => {
       setIsProcessing(false);
-      // Store credits in localStorage
-      localStorage.setItem('logosnap_credits', '5');
-      localStorage.setItem('logosnap_paid', 'true');
+      // Simulate successful purchase
       onPaymentSuccess();
     }, 2000);
   };
@@ -109,7 +138,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
         </Button>
 
         <p className="text-xs text-gray-500 mt-3">
-          Secure payment powered by Stripe
+          Secure payment powered by RevenueCat
         </p>
       </div>
     </motion.div>
