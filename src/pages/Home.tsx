@@ -1,15 +1,36 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GenerateImage } from "@/integrations/Core";
-import ImageStorage from "@/components/ImageStorage";
+import { GenerateImage } from "../integrations/Core";
 
-import SplashScreen from "@/components/SplashScreen";
-import TabNavigation from "@/components/TabNavigation";
-import PaymentWall from "@/components/PaymentWall";
-import PromptInput from "@/components/PromptInput";
-import LogoGrid from "@/components/LogoGrid";
-import FavoritesView from "@/components/FavoritesView";
-import FavoriteWarningModal from "@/components/FavoriteWarningModal";
+import SplashScreen from "../components/SplashScreen";
+import TabNavigation from "../components/TabNavigation";
+import PaymentWall from "../components/PaymentWall";
+import PromptInput from "../components/PromptInput";
+import LogoGrid from "../components/LogoGrid";
+import FavoritesView from "../components/FavoritesView";
+import FavoriteWarningModal from "../components/FavoriteWarningModal";
+
+// Simple ImageStorage replacement for Bolt.new (no IndexedDB)
+const ImageStorage = {
+  urlToBlob: async (url) => {
+    const response = await fetch(url);
+    return await response.blob();
+  },
+  downloadBlob: (blob, filename) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+  isAtCapacity: () => false, // No capacity limit for synthetic testing
+  saveFavoriteImage: async (logo) => { return true; }, // Mock save
+  removeFavoriteImage: async (logoId) => { return true; }, // Mock remove
+  getAllFavorites: async () => { return []; } // Mock get all
+};
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
@@ -41,14 +62,11 @@ export default function Home() {
 
   useEffect(() => {
     const initializeApp = async () => {
-      // Check payment status and credits
-      const paid = localStorage.getItem('logosnap_paid') === 'true';
-      const credits = parseInt(localStorage.getItem('logosnap_credits') || '0');
+      // SYNTHETIC TESTING - No localStorage, start fresh each time
+      setHasPaid(false);
+      setCreditsRemaining(0);
       
-      setHasPaid(paid);
-      setCreditsRemaining(credits);
-      
-      // Load favorites from IndexedDB
+      // Load favorites (empty for synthetic testing)
       await loadFavorites();
     };
 
@@ -58,8 +76,7 @@ export default function Home() {
   const handlePaymentSuccess = () => {
     setHasPaid(true);
     setCreditsRemaining(5);
-    localStorage.setItem('logosnap_paid', 'true');
-    localStorage.setItem('logosnap_credits', '5');
+    // No localStorage for Bolt.new compatibility
   };
 
   const handleGenerate = async (prompt) => {
@@ -72,55 +89,28 @@ export default function Home() {
     
     const generatedLogos = [];
     const newTempUrls = [];
-    const maxAttemptsPerLogo = 3;
 
     try {
       for (let i = 0; i < 4; i++) {
-        let validLogo = null;
-        let attempts = 0;
+        const result = await GenerateImage({
+          prompt: `${prompt}. Logo design ${i + 1}. Clean, professional, minimalist style.`
+        });
         
-        while (validLogo === null && attempts < maxAttemptsPerLogo) {
-          try {
-            const result = await GenerateImage({
-              prompt: `${prompt}. Logo design ${i + 1}. Clean, professional, minimalist style. Transparent background. 512x512 pixels. PNG format. High quality vector-style illustration.`
-            });
-            
-            if (result && 
-                result.url && 
-                typeof result.url === 'string' && 
-                result.url.trim() !== '' &&
-                (result.url.startsWith('http://') || result.url.startsWith('https://'))) {
-              
-              // Fetch the image blob immediately
-              const imageBlob = await ImageStorage.urlToBlob(result.url);
-              const tempUrl = URL.createObjectURL(imageBlob);
-              newTempUrls.push(tempUrl);
-              
-              validLogo = {
-                id: Date.now() + i + Math.random(),
-                url: tempUrl,
-                blob: imageBlob,
-                prompt: prompt,
-                createdAt: new Date().toISOString()
-              };
-
-            } else {
-              console.warn(`Logo ${i + 1} (attempt ${attempts + 1}) - Invalid result:`, result);
-            }
-          } catch (error) {
-            console.error(`Logo ${i + 1} (attempt ${attempts + 1}) - GenerateImage error:`, error);
-          }
+        if (result && result.url) {
+          // Fetch the image blob immediately
+          const imageBlob = await ImageStorage.urlToBlob(result.url);
+          const tempUrl = URL.createObjectURL(imageBlob);
+          newTempUrls.push(tempUrl);
           
-          attempts++;
-        }
+          const validLogo = {
+            id: Date.now() + i + Math.random(),
+            url: tempUrl,
+            blob: imageBlob,
+            prompt: prompt,
+            createdAt: new Date().toISOString()
+          };
 
-        if (validLogo) {
           generatedLogos.push(validLogo);
-        } else {
-          console.error(`Failed to generate valid logo ${i + 1} after ${maxAttemptsPerLogo} attempts`);
-          setIsGenerating(false);
-          alert("Something went wrong. Please restart the app and try again.");
-          return;
         }
       }
 
@@ -128,20 +118,15 @@ export default function Home() {
         // Store temporary URLs for cleanup later
         setTempImageUrls(newTempUrls);
         
-        // Set current generation logos for display (temporary, in memory only)
+        // Set current generation logos for display
         setCurrentGenerationLogos(generatedLogos);
         
         const newCredits = creditsRemaining - 1;
         setCreditsRemaining(newCredits);
-        localStorage.setItem('logosnap_credits', newCredits.toString());
-      } else {
-        console.error("Unexpected: Generated logos count not 4. Credits not deducted.");
-        alert("Something went wrong. Please restart the app and try again.");
       }
       
     } catch (error) {
-      console.error('Unhandled error in handleGenerate:', error);
-      alert("Something went wrong. Please restart the app and try again.");
+      console.error('Error in handleGenerate:', error);
     } finally {
       setIsGenerating(false);
     }
@@ -155,49 +140,27 @@ export default function Home() {
     
     if (isAlreadyFavorite) {
       // Remove from favorites
-      await ImageStorage.removeFavoriteImage(logoId);
-      await loadFavorites();
+      setFavoriteLogos(prev => prev.filter(f => f.id !== logoId));
+      setFavoriteCount(prev => prev - 1);
     } else {
-      // Check if at capacity
-      if (await ImageStorage.isAtCapacity()) {
-        setShowFavoriteWarning(true);
-        return;
-      }
-      
-      // Add to favorites in IndexedDB
-      try {
-        await ImageStorage.saveFavoriteImage(logo);
-        await loadFavorites();
-      } catch (error) {
-        console.error('Error saving favorite:', error);
-        alert('Error saving favorite. Please try again.');
-      }
+      // Add to favorites
+      setFavoriteLogos(prev => [...prev, logo]);
+      setFavoriteCount(prev => prev + 1);
     }
   };
 
   const handleDownload = async (logo) => {
     try {
-      let imageBlob;
-      
-      // Check if this is a favorite (with blob) or temporary (need to fetch)
-      if (logo.blob) {
-        imageBlob = logo.blob;
-      } else {
-        // For favorites loaded from IndexedDB, we need to get the blob
-        const favorite = favoriteLogos.find(f => f.id === logo.id);
-        imageBlob = favorite ? favorite.blob : await ImageStorage.urlToBlob(logo.url);
-      }
-      
+      let imageBlob = logo.blob || await ImageStorage.urlToBlob(logo.url);
       ImageStorage.downloadBlob(imageBlob, `logosnap-logo-${logo.id}.png`);
     } catch (error) {
       console.error('Error downloading logo:', error);
-      alert('Error downloading logo. Please try again.');
     }
   };
 
   const handleRemoveFavorite = async (logoId) => {
-    await ImageStorage.removeFavoriteImage(logoId);
-    await loadFavorites();
+    setFavoriteLogos(prev => prev.filter(f => f.id !== logoId));
+    setFavoriteCount(prev => prev - 1);
   };
 
   const isFavorite = (logoId) => {
