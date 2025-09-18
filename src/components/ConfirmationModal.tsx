@@ -1,11 +1,34 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+
+// Simple Button component to replace shadcn dependency
+const Button = ({ children, onClick, variant = "default", className = "", ...props }) => {
+  const baseStyles = "px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
+  const variants = {
+    default: "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500",
+    outline: "border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 focus:ring-gray-500"
+  };
+  
+  return (
+    <button 
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+      onClick={onClick}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Simple AlertTriangle icon to replace lucide-react dependency
+const AlertTriangle = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+  </svg>
+);
 
 export default function ConfirmationModal({ isOpen, onConfirm, onCancel, title, message }) {
   if (!isOpen) return null;
-
   return (
     <AnimatePresence>
       <motion.div
