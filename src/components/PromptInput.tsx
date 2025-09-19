@@ -55,8 +55,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
         {/* Quick Fill Button */}
         <Button
           onClick={() => setPrompt(defaultPrompt)}
-          variant="outline"
-          className="w-full text-gray-600 border-gray-300 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl"
+          className="w-full py-3 text-gray-600 border border-gray-300 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl bg-white"
         >
           Edit Example Prompt
         </Button>
@@ -65,7 +64,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
         <Button
           onClick={handleGenerate}
           disabled={!prompt.trim() || isGenerating || creditsRemaining === 0}
-          className="w-full py-4 text-lg font-black rounded-2xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full py-3 text-lg font-medium rounded-xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           {isGenerating ? (
             <div className="flex items-center justify-center space-x-2">
