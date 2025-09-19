@@ -1,6 +1,25 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, CreditCard, Check } from "lucide-react";
+
+// Custom SVG icon components
+const Sparkles = ({ className }: { className?: string }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+    <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/>
+  </svg>
+);
+
+const CreditCard = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <rect width="20" height="14" x="2" y="5" rx="2"/>
+    <line x1="2" x2="22" y1="10" y2="10"/>
+  </svg>
+);
+
+const Check = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <polyline points="20,6 9,17 4,12"/>
+  </svg>
+);
 
 export default function PaymentWall({ onPaymentSuccess }) {
   const [isProcessing, setIsProcessing] = useState(false);
