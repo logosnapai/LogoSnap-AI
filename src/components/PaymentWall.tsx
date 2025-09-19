@@ -1,7 +1,21 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, CreditCard, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+// Inline Button component for bulletproof architecture
+const Button = ({ children, onClick, disabled, className = "", style = {}, ...props }) => {
+  return (
+    <button 
+      className={className}
+      style={style}
+      onClick={onClick}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
 
 export default function PaymentWall({ onPaymentSuccess }) {
   const [isProcessing, setIsProcessing] = useState(false);
