@@ -2,20 +2,27 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 // Simple Textarea component to replace shadcn dependency
-const Textarea = ({ value, onChange, placeholder, className = "", ...props }) => {
+const Textarea = (props) => {
+  const { value, onChange, placeholder, className, ...otherProps } = props;
+  const textareaClassName = className || "";
+  
   return (
     <textarea 
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={`w-full p-3 border rounded-lg resize-none focus:outline-none focus:ring-2 ${className}`}
-      {...props}
+      className={`w-full p-3 border rounded-lg resize-none focus:outline-none focus:ring-2 ${textareaClassName}`}
+      {...otherProps}
     />
   );
 };
 
 // Simple Button component to replace shadcn dependency
-const Button = ({ children, onClick, disabled, variant = "default", className = "", ...props }) => {
+const Button = (props) => {
+  const { children, onClick, disabled, variant, className, ...otherProps } = props;
+  const buttonVariant = variant || "default";
+  const buttonClassName = className || "";
+  
   const baseStyles = "px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none";
   const variants = {
     default: "bg-blue-600 hover:bg-blue-700 text-white",
@@ -24,10 +31,10 @@ const Button = ({ children, onClick, disabled, variant = "default", className = 
   
   return (
     <button 
-      className={`${baseStyles} ${variants[variant]} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'} ${className}`}
+      className={`${baseStyles} ${variants[buttonVariant]} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'} ${buttonClassName}`}
       onClick={onClick}
       disabled={disabled}
-      {...props}
+      {...otherProps}
     >
       {children}
     </button>
@@ -35,17 +42,23 @@ const Button = ({ children, onClick, disabled, variant = "default", className = 
 };
 
 // Simple icons to replace lucide-react
-const Sparkles = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-  </svg>
-);
+const Sparkles = (props) => {
+  const { className } = props;
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+    </svg>
+  );
+};
 
-const Wand2 = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 4V2m0 2v2m0-2h2m-2 0h-2m0 16l-4-4 4-4m6 8l4-4-4-4" />
-  </svg>
-);
+const Wand2 = (props) => {
+  const { className } = props;
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 4V2m0 2v2m0-2h2m-2 0h-2m0 16l-4-4 4-4m6 8l4-4-4-4" />
+    </svg>
+  );
+};
 
 export default function PromptInput({ onGenerate, isGenerating, creditsRemaining }) {
   const [prompt, setPrompt] = useState("");
