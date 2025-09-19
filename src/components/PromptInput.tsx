@@ -58,7 +58,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 mx-4 text-black shadow-2xl">
+    <div className="glass-card rounded-3xl p-6 max-w-md mx-auto text-black shadow-2xl">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
