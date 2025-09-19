@@ -1,37 +1,32 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-// Simple Textarea component to replace shadcn dependency
+// Inline Textarea component with original styling
 const Textarea = (props) => {
   const { value, onChange, placeholder, className, ...otherProps } = props;
-  const textareaClassName = className || "";
-  
   return (
     <textarea 
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={`w-full p-3 border rounded-lg resize-none focus:outline-none focus:ring-2 ${textareaClassName}`}
+      className={className}
       {...otherProps}
     />
   );
 };
 
-// Simple Button component to replace shadcn dependency
+// Inline Button component with original styling  
 const Button = (props) => {
   const { children, onClick, disabled, variant, className, ...otherProps } = props;
-  const buttonVariant = variant || "default";
-  const buttonClassName = className || "";
+  const isOutline = variant === "outline";
   
-  const baseStyles = "px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none";
-  const variants = {
-    default: "bg-blue-600 hover:bg-blue-700 text-white",
-    outline: "border border-gray-300 bg-white hover:bg-gray-50 text-gray-700"
-  };
+  const baseClasses = isOutline 
+    ? "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+    : "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2";
   
   return (
     <button 
-      className={`${baseStyles} ${variants[buttonVariant]} ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'} ${buttonClassName}`}
+      className={`${baseClasses} ${className || ""}`}
       onClick={onClick}
       disabled={disabled}
       {...otherProps}
@@ -41,27 +36,56 @@ const Button = (props) => {
   );
 };
 
-// Simple icons to replace lucide-react
-const Sparkles = (props) => {
-  const { className } = props;
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-    </svg>
-  );
-};
+// Inline Sparkles icon
+const Sparkles = (props) => (
+  <svg
+    className={props.className}
+    fill="none"
+    height="24"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    width="24"
+  >
+    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+    <path d="M20 3v4" />
+    <path d="M22 5h-4" />
+    <path d="M4 17v2" />
+    <path d="M5 18H3" />
+  </svg>
+);
 
-const Wand2 = (props) => {
-  const { className } = props;
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 4V2m0 2v2m0-2h2m-2 0h-2m0 16l-4-4 4-4m6 8l4-4-4-4" />
-    </svg>
-  );
-};
+// Inline Wand2 icon
+const Wand2 = (props) => (
+  <svg
+    className={props.className}
+    fill="none"
+    height="24"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    width="24"
+  >
+    <path d="M15 4V2" />
+    <path d="M15 16v-2" />
+    <path d="M8 9h2" />
+    <path d="M20 9h2" />
+    <path d="M17.8 11.8 19 13" />
+    <path d="M15 9h0" />
+    <path d="M17.8 6.2 19 5" />
+    <path d="m3 21 9-9" />
+    <path d="m12.2 6.2 2.8-2.8" />
+    <path d="m10 2 1.8 1.8" />
+  </svg>
+);
 
 export default function PromptInput({ onGenerate, isGenerating, creditsRemaining }) {
   const [prompt, setPrompt] = useState("");
+
   const defaultPrompt = "Build me a recognizable symbol like Apple. No text. Make it iconic, simple, and modern with unique visual identity. Use symbolism or abstract forms. No gradients, think versatile and brandable.";
 
   const handleGenerate = () => {
@@ -71,7 +95,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 max-w-md mx-auto mb-8 text-black shadow-2xl">
+    <div className="glass-card rounded-3xl p-6 mx-4 text-black shadow-2xl">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -109,7 +133,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
         <Button
           onClick={handleGenerate}
           disabled={!prompt.trim() || isGenerating || creditsRemaining === 0}
-          className="w-full py-4 text-lg font-black rounded-3xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full py-4 text-lg font-black rounded-2xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           {isGenerating ? (
             <div className="flex items-center justify-center space-x-2">
