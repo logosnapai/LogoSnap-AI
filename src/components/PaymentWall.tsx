@@ -103,7 +103,15 @@ export default function PaymentWall({ onPaymentSuccess }) {
           <div className="text-4xl font-black text-gray-900 mb-1">
             $4.99
           </div>
-          <div className="font-bold text-lg mb-2" style={{ color: '#FF8C00' }}>
+          <div 
+            className="font-bold text-lg mb-2"
+            style={{
+              background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
             That's only 25 cents a logo!
           </div>
           <div className="text-gray-600 font-medium text-sm">
