@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Wand2 } from "lucide-react";
 
-// Simple replacements for missing shadcn components
-const Textarea = ({ className, ...props }) => (
-  <textarea className={className} {...props} />
+// Exact replicas to replace the missing imports
+const Textarea = (props) => <textarea {...props} />;
+const Button = (props) => <button {...props} />;
+const Sparkles = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+  </svg>
 );
-
-const Button = ({ className, variant, ...props }) => (
-  <button className={className} {...props} />
+const Wand2 = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 4V2m0 2v2m0-2h2m-2 0h-2m0 16l-4-4 4-4m6 8l4-4-4-4" />
+  </svg>
 );
 
 export default function PromptInput({ onGenerate, isGenerating, creditsRemaining }) {
@@ -23,7 +27,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 max-w-md mx-auto mb-8 text-black shadow-2xl">
+    <div className="glass-card rounded-3xl p-6 mx-4 text-black shadow-2xl">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
