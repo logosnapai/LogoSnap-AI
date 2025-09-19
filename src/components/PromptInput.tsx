@@ -27,7 +27,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 mx-4 text-black shadow-2xl">
+    <div className="glass-card rounded-3xl p-6 max-w-md mx-auto mb-8 text-black shadow-2xl">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -49,7 +49,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder={defaultPrompt}
-          className="min-h-32 text-base rounded-2xl border-2 border-gray-200 focus:border-yellow-400 focus:ring-0 resize-none bg-white/80"
+          className="h-20 text-base rounded-2xl border-2 border-gray-200 focus:border-yellow-400 focus:ring-0 resize-none bg-white/80 w-full overflow-hidden"
         />
 
         {/* Quick Fill Button */}
