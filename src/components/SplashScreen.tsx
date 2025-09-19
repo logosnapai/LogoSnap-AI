@@ -48,7 +48,7 @@ export default function SplashScreen({ onComplete }) {
           />
         </motion.div>
 
-        {/* Orbiting Sparkles */}
+        {/* Orbiting Sparkles - BACK TO BEAUTIFUL EMOJI! */}
         {sparkles.map((sparkle) => (
           <motion.div
             key={sparkle.id}
