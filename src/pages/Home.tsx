@@ -44,11 +44,14 @@ export default function Home() {
   const [showFavoriteWarning, setShowFavoriteWarning] = useState(false);
   const [tempImageUrls, setTempImageUrls] = useState([]);
 
+  // FIXED: Remove tempImageUrls from dependency array to prevent recreating function
   const cleanupTempUrls = useCallback(() => {
     // Revoke temporary object URLs to free memory
-    tempImageUrls.forEach(url => URL.revokeObjectURL(url));
-    setTempImageUrls([]);
-  }, [tempImageUrls]);
+    setTempImageUrls(prev => {
+      prev.forEach(url => URL.revokeObjectURL(url));
+      return [];
+    });
+  }, []); // Empty dependency array
 
   const loadFavorites = async () => {
     try {
@@ -71,7 +74,7 @@ export default function Home() {
     };
 
     initializeApp();
-  }, []);
+  }, []); // Empty dependency array - only run once
 
   const handlePaymentSuccess = () => {
     setHasPaid(true);
@@ -176,15 +179,22 @@ export default function Home() {
     setShowFavoriteWarning(false);
   };
 
-  // Cleanup URLs on unmount
+  // FIXED: Remove cleanupTempUrls from dependency array
   useEffect(() => {
     return () => {
-      cleanupTempUrls();
+      // Direct cleanup on unmount
+      tempImageUrls.forEach(url => URL.revokeObjectURL(url));
     };
-  }, [cleanupTempUrls]);
+  }, []); // Empty dependency array - only run on mount/unmount
+
+  // FIXED: Add debug logging to verify splash screen behavior
+  const handleSplashComplete = useCallback(() => {
+    console.log("Splash screen completed, hiding splash");
+    setShowSplash(false);
+  }, []);
 
   if (showSplash) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+    return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
   return (
