@@ -112,7 +112,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
               backgroundClip: 'text'
             }}
           >
-            That's only 25 cents a logo!
+            Only 25 cents a logo!
           </div>
           <div className="text-gray-600 font-medium text-sm">
             One-time payment • No subscription
