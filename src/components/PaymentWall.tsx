@@ -1,6 +1,22 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
+// Simple Button component to replace shadcn dependency
+const Button = ({ children, onClick, disabled, className = "", ...props }) => {
+  const baseStyles = "px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+  
+  return (
+    <button 
+      className={`${baseStyles} ${className}`}
+      onClick={onClick}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
 // Inline SVG icons to replace lucide-react
 const Sparkles = ({ className }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -27,9 +43,12 @@ export default function PaymentWall({ onPaymentSuccess }) {
   const handlePayment = async () => {
     setIsProcessing(true);
     
-    // Simulate Stripe payment process - No localStorage for Bolt.new
+    // Simulate Stripe payment process
     setTimeout(() => {
       setIsProcessing(false);
+      // Store credits in localStorage
+      localStorage.setItem('logosnap_credits', '5');
+      localStorage.setItem('logosnap_paid', 'true');
       onPaymentSuccess();
     }, 2000);
   };
@@ -38,12 +57,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="rounded-3xl p-6 mx-4 text-black shadow-2xl max-w-sm mx-auto"
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)'
-      }}
+      className="glass-card rounded-3xl p-6 mx-4 text-black shadow-2xl max-w-sm mx-auto"
     >
       <div className="text-center">
         {/* Icon */}
@@ -57,25 +71,13 @@ export default function PaymentWall({ onPaymentSuccess }) {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
-          style={{
-            background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-            boxShadow: '0 10px 25px rgba(255, 215, 0, 0.5)'
-          }}
+          className="w-16 h-16 gold-bg rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-yellow-500/50"
         >
           <Sparkles className="w-8 h-8 text-black" />
         </motion.div>
 
         {/* Headline */}
-        <h2 
-          className="text-2xl font-black mb-4"
-          style={{
-            background: 'linear-gradient(to right, #1f2937, #374151)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}
-        >
+        <h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
           Unlock AI Logo Magic
         </h2>
 
@@ -85,7 +87,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
             "5 custom logo generations",
             "20 logos (4 per generation)",
             "AI-powered design creation", 
-            "HD images PNG downloads", 
+            "HD transparent PNG downloads",
             "Commercial usage rights"
           ].map((feature, index) => (
             <motion.div
@@ -95,12 +97,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
               transition={{ delay: index * 0.1 }}
               className="flex items-center justify-center space-x-2"
             >
-              <div 
-                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{
-                  background: 'linear-gradient(135deg, #FFD700, #FFA500)'
-                }}
-              >
+              <div className="w-5 h-5 gold-bg rounded-full flex items-center justify-center flex-shrink-0">
                 <Check className="w-3 h-3 text-black" />
               </div>
               <span className="text-gray-700 font-medium text-sm">{feature}</span>
@@ -108,10 +105,13 @@ export default function PaymentWall({ onPaymentSuccess }) {
           ))}
         </div>
 
-        {/* Price */}
+        {/* Price Breakdown */}
         <div className="text-center mb-6">
           <div className="text-4xl font-black text-gray-900 mb-1">
             $4.99
+          </div>
+          <div className="gold-gradient font-bold text-lg mb-2">
+            That's only 25 cents a logo!
           </div>
           <div className="text-gray-600 font-medium text-sm">
             One-time payment • No subscription
@@ -119,14 +119,10 @@ export default function PaymentWall({ onPaymentSuccess }) {
         </div>
 
         {/* CTA Button */}
-        <button
+        <Button
           onClick={handlePayment}
           disabled={isProcessing}
-          className="w-full py-3 text-base font-black rounded-2xl text-black transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{
-            background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-            boxShadow: isProcessing ? 'none' : '0 10px 25px rgba(255, 215, 0, 0.5)'
-          }}
+          className="w-full py-3 text-base font-black rounded-2xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105"
         >
           {isProcessing ? (
             <div className="flex items-center justify-center space-x-2">
@@ -139,7 +135,11 @@ export default function PaymentWall({ onPaymentSuccess }) {
               <span>Get 5 Logo Generations</span>
             </div>
           )}
-        </button>
+        </Button>
+
+        <p className="text-xs text-gray-500 mt-3">
+          Secure Checkout
+        </p>
       </div>
     </motion.div>
   );
