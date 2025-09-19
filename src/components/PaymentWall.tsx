@@ -75,7 +75,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
             "5 custom logo generations",
             "20 logos (4 per generation)",
             "AI-powered design creation", 
-            "HD transparent PNG downloads",
+            "SVG & PNG Premium Downloads",
             "Commercial usage rights"
           ].map((feature, index) => (
             <motion.div
