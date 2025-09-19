@@ -62,7 +62,7 @@ export default function FavoritesView({ favorites, onDownload, onRemoveFavorite 
 
   if (sortedFavorites.length === 0) {
     return (
-      <div className="glass-card rounded-3xl p-8 mx-4 mb-8 text-center shadow-2xl">
+      <div className="glass-card rounded-3xl p-8 max-w-md mx-auto mb-8 text-center shadow-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -83,7 +83,7 @@ export default function FavoritesView({ favorites, onDownload, onRemoveFavorite 
 
   return (
     <>
-      <div className="glass-card rounded-3xl p-6 mx-4 mb-8 shadow-2xl">
+      <div className="glass-card rounded-3xl p-6 max-w-md mx-auto mb-8 shadow-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
