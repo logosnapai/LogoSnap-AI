@@ -58,7 +58,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 max-w-md mx-auto text-black shadow-2xl">
+    <div className="glass-card rounded-3xl p-6 max-w-md mx-auto mb-8 text-black shadow-2xl">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -96,7 +96,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
         <Button
           onClick={handleGenerate}
           disabled={!prompt.trim() || isGenerating || creditsRemaining === 0}
-          className="w-full py-4 text-lg font-black rounded-2xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full py-4 text-lg font-black rounded-3xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           {isGenerating ? (
             <div className="flex items-center justify-center space-x-2">
