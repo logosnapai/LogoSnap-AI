@@ -1,7 +1,41 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, CreditCard, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+// Custom SVG Icons
+const Sparkles = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3l1.5 1.5L5 6 3.5 4.5 5 3zM19 3l1.5 1.5L19 6l-1.5-1.5L19 3zM12 8l1.5 1.5L12 11l-1.5-1.5L12 8zM5 21l1.5-1.5L5 18l-1.5 1.5L5 21zM19 21l1.5-1.5L19 18l-1.5 1.5L19 21z" />
+  </svg>
+);
+
+const CreditCard = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" strokeWidth={2} />
+    <line x1="1" y1="10" x2="23" y2="10" strokeWidth={2} />
+  </svg>
+);
+
+const Check = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <polyline points="20,6 9,17 4,12" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+// Custom Button Component
+const Button = ({ children, onClick, disabled, className }: { 
+  children: React.ReactNode; 
+  onClick?: () => void; 
+  disabled?: boolean; 
+  className?: string; 
+}) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className={className}
+  >
+    {children}
+  </button>
+);
 
 export default function PaymentWall({ onPaymentSuccess }) {
   const [isProcessing, setIsProcessing] = useState(false);
