@@ -57,7 +57,12 @@ export default function PaymentWall({ onPaymentSuccess }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="glass-card rounded-3xl p-6 mx-4 text-black shadow-2xl max-w-sm mx-auto"
+      className="rounded-3xl p-6 mx-4 text-black shadow-2xl max-w-sm mx-auto"
+      style={{
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)'
+      }}
     >
       <div className="text-center">
         {/* Icon */}
@@ -71,7 +76,11 @@ export default function PaymentWall({ onPaymentSuccess }) {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="w-16 h-16 gold-bg rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-yellow-500/50"
+          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+            boxShadow: '0 10px 25px rgba(255, 215, 0, 0.5)'
+          }}
         >
           <Sparkles className="w-8 h-8 text-black" />
         </motion.div>
@@ -97,7 +106,12 @@ export default function PaymentWall({ onPaymentSuccess }) {
               transition={{ delay: index * 0.1 }}
               className="flex items-center justify-center space-x-2"
             >
-              <div className="w-5 h-5 gold-bg rounded-full flex items-center justify-center flex-shrink-0">
+              <div 
+                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500)'
+                }}
+              >
                 <Check className="w-3 h-3 text-black" />
               </div>
               <span className="text-gray-700 font-medium text-sm">{feature}</span>
@@ -110,7 +124,15 @@ export default function PaymentWall({ onPaymentSuccess }) {
           <div className="text-4xl font-black text-gray-900 mb-1">
             $4.99
           </div>
-          <div className="gold-gradient font-bold text-lg mb-2">
+          <div 
+            className="font-bold text-lg mb-2"
+            style={{
+              background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
             That's only 25 cents a logo!
           </div>
           <div className="text-gray-600 font-medium text-sm">
@@ -122,7 +144,11 @@ export default function PaymentWall({ onPaymentSuccess }) {
         <Button
           onClick={handlePayment}
           disabled={isProcessing}
-          className="w-full py-3 text-base font-black rounded-2xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105"
+          className="w-full py-3 text-base font-black rounded-2xl text-black transition-all duration-300 hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+            boxShadow: isProcessing ? 'none' : '0 10px 25px rgba(255, 215, 0, 0.5)'
+          }}
         >
           {isProcessing ? (
             <div className="flex items-center justify-center space-x-2">
