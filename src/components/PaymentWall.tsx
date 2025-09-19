@@ -123,7 +123,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
         <Button
           onClick={handlePayment}
           disabled={isProcessing}
-          className="w-full py-3 text-base font-black rounded-2xl text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105"
+          className="w-full py-3 text-base font-medium rounded-2xl text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105"
           style={{
             background: 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00)'
           }}
@@ -136,7 +136,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
           ) : (
             <div className="flex items-center justify-center space-x-2">
               <CreditCard className="w-4 h-4" />
-              <span>Get 5 Logo Generations</span>
+              <span>Get 20 Logo Variations</span>
             </div>
           )}
         </Button>
