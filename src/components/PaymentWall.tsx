@@ -106,7 +106,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
           <div 
             className="font-bold text-lg mb-2"
             style={{
-              background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+              background: 'linear-gradient(135deg, #FF8C00, #FF8C00)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
