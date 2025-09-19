@@ -66,7 +66,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
         className="text-center mb-6"
       >
         <h2 className="text-xl md:text-2xl font-black mb-2 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-          DESCRIBE YOUR DREAM LOGO
+          Describe your dream logo
         </h2>
         <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
           <Sparkles className="w-4 h-4" />
