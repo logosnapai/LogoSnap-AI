@@ -34,7 +34,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
         </h2>
         <div className="flex items-center justify-center space-x-2 text-sm">
           <Sparkles className="w-4 h-4 text-yellow-500" />
-          <span className="bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent font-bold animate-pulse">
+          <span className="text-yellow-500 font-bold drop-shadow-[0_0_8px_rgba(234,179,8,0.6)] animate-pulse">
             Credits Remaining: {creditsRemaining}/5
           </span>
         </div>
