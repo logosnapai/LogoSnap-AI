@@ -42,7 +42,7 @@ export default function SplashScreen({ onComplete }) {
           className="relative z-10"
         >
           <img 
-            src="/logo-transparent.png"
+            src="/transparent-logo"
             alt="LogoSnap AI"
             className="w-32 h-32 rounded-3xl shadow-2xl"
           />
