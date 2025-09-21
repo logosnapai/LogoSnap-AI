@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-// Simple icons to replace lucide-react
+// Premium icons
 const Sparkles = ({ className }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -14,9 +14,9 @@ const Star = ({ className }) => (
   </svg>
 );
 
-const RotateCcw = ({ className }) => (
+const Clock = ({ className }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1 4v6h6M3.51 15a9 9 0 102.13-9.36L1 10" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
 );
 
@@ -24,62 +24,156 @@ export default function TabNavigation({ activeTab, onTabChange, creditsRemaining
   const tabs = [
     { id: 'generate', label: 'Generate', icon: Sparkles },
     { id: 'favorites', label: 'Favorites', icon: Star, count: `${favoritesCount}/50` },
-    { id: 'try-again', label: 'Try Again', icon: RotateCcw }
+    { id: 'history', label: 'History', icon: Clock } // Changed from "try-again" to "history"
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-gray-800 z-40">
+    <div className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-gray-800/30 z-40">
+      {/* Premium ambient glow at top */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/20 to-transparent"></div>
+      
       <div className="flex justify-around items-center py-3 px-4 max-w-md mx-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           
           return (
-            <button
+            <motion.button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className="flex flex-col items-center space-y-1 py-2 px-3 rounded-lg transition-all duration-200 relative"
+              className="flex flex-col items-center space-y-1 py-2 px-3 rounded-lg transition-all duration-200 relative group"
+              whileTap={{ scale: 0.95 }}
             >
+              {/* Premium button background with inner glow */}
               <motion.div
                 animate={{ 
                   scale: isActive ? 1.1 : 1,
-                  rotateY: isActive ? 360 : 0
                 }}
-                transition={{ duration: 0.3 }}
-                className={`p-2 rounded-full ${
+                transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+                className={`p-2 rounded-full relative ${
                   isActive 
-                    ? 'gold-bg shadow-lg shadow-yellow-500/50' 
-                    : 'bg-gray-800'
+                    ? 'gold-bg shadow-lg' 
+                    : 'bg-gray-800/60 group-hover:bg-gray-700/60'
                 }`}
               >
-                <Icon 
-                  className={`w-5 h-5 ${
-                    isActive ? 'text-black' : 'text-gray-400'
-                  }`} 
-                />
+                {/* Inner rim lighting for active state */}
+                {isActive && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    animate={{
+                      boxShadow: [
+                        '0 0 0 0px rgba(255, 215, 0, 0.4)',
+                        '0 0 0 2px rgba(255, 215, 0, 0.6)',
+                        '0 0 0 0px rgba(255, 215, 0, 0.4)'
+                      ]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                )}
+
+                {/* Icon with enhanced animations */}
+                <motion.div
+                  animate={isActive ? { 
+                    rotate: tab.id === 'generate' ? [0, 10, -10, 0] : 0,
+                    scale: [1, 1.1, 1]
+                  } : {}}
+                  transition={{ 
+                    duration: tab.id === 'generate' ? 2 : 1.5, 
+                    repeat: isActive ? Infinity : 0 
+                  }}
+                >
+                  <Icon 
+                    className={`w-5 h-5 transition-colors duration-200 ${
+                      isActive ? 'text-black' : 'text-gray-400 group-hover:text-gray-300'
+                    }`} 
+                  />
+                </motion.div>
               </motion.div>
-              <span className={`text-xs font-medium ${
-                isActive ? 'gold-gradient' : 'text-gray-400'
+
+              {/* Enhanced label with gradient */}
+              <span className={`text-xs font-medium transition-all duration-200 ${
+                isActive 
+                  ? 'bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent' 
+                  : 'text-gray-400 group-hover:text-gray-300'
               }`}>
                 {tab.label}
               </span>
               
-              {/* Favorites Counter */}
+              {/* Premium Favorites Counter */}
               {tab.id === 'favorites' && tab.count && (
-                <div className={`text-xs font-bold ${
-                  isActive ? 'text-yellow-500' : 'text-gray-500'
-                }`}>
+                <motion.div 
+                  className={`text-xs font-bold transition-all duration-200 ${
+                    isActive 
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent' 
+                      : 'text-gray-500'
+                  }`}
+                  animate={isActive ? { scale: [1, 1.05, 1] } : {}}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
                   {tab.count}
-                </div>
+                </motion.div>
               )}
               
-              {/* Credits Counter */}
-              {tab.id === 'try-again' && creditsRemaining !== null && (
-                <div className="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              {/* Enhanced Credits Counter with Pulsing Glow */}
+              {tab.id === 'generate' && creditsRemaining !== null && (
+                <motion.div 
+                  className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold shadow-lg"
+                  animate={{
+                    boxShadow: [
+                      '0 0 0 0px rgba(239, 68, 68, 0.4)',
+                      '0 0 0 4px rgba(239, 68, 68, 0.1)',
+                      '0 0 0 0px rgba(239, 68, 68, 0.4)'
+                    ],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
                   {creditsRemaining}
+                </motion.div>
+              )}
+
+              {/* Micro sparkle particles for active generate tab */}
+              {isActive && tab.id === 'generate' && (
+                <div className="absolute inset-0 pointer-events-none">
+                  <motion.div
+                    className="absolute top-1 right-2 w-0.5 h-0.5 bg-yellow-300 rounded-full"
+                    animate={{
+                      opacity: [0, 1, 0],
+                      scale: [0, 1, 0],
+                      y: [0, -8, 0],
+                      x: [0, 4, 0]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: 0
+                    }}
+                  />
+                  <motion.div
+                    className="absolute bottom-1 left-2 w-0.5 h-0.5 bg-orange-300 rounded-full"
+                    animate={{
+                      opacity: [0, 1, 0],
+                      scale: [0, 1, 0],
+                      y: [0, 6, 0],
+                      x: [0, -3, 0]
+                    }}
+                    transition={{
+                      duration: 2.5,
+                      repeat: Infinity,
+                      delay: 1
+                    }}
+                  />
                 </div>
               )}
-            </button>
+            </motion.button>
           );
         })}
       </div>
