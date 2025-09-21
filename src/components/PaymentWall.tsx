@@ -1,264 +1,161 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { Sparkles, CreditCard, Check } from "lucide-react";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Sparkles, CreditCard, Check } from "lucide-react";
 
-// Premium icons
-const Sparkles = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-  </svg>
-);
+// Inline Button component for bulletproof architecture
+const Button = ({ children, onClick, disabled, className = "", style = {}, ...props }) => {
+@@ -122,151 +119,6 @@ export default function PaymentWall({ onPaymentSuccess }) {
+          </div>
+        </div>
 
-const Zap = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-  </svg>
-);
+        {/* CTA Button */}
+        <Button
+          onClick={handlePayment}
+          disabled={isProcessing}
+          className="w-full py-3 text-base font-medium rounded-2xl text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00)'
+          }}
+        >
+          {isProcessing ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              <span>Processing...</span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center space-x-2">
+              <CreditCard className="w-4 h-4" />
+              <span>Get 5 Logo Generations</span>
+            </div>
+          )}
+        </Button>
 
-const Shield = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-const Crown = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-  </svg>
-);
+        <p className="text-xs text-gray-500 mt-3">
+          Secure Checkout
+        </p>
+      </div>
+    </motion.div>
+  );
+} bulletproof architecture
+const Button = ({ children, onClick, disabled, className = "", style = {}, ...props }) => {
+  return (
+    <button 
+      className={className}
+      style={style}
+      onClick={onClick}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
 
 export default function PaymentWall({ onPaymentSuccess }) {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handlePayment = async () => {
     setIsProcessing(true);
-    // Simulate payment processing
+    
+    // Simulate Stripe payment process
     setTimeout(() => {
       setIsProcessing(false);
+      // Store credits in localStorage
+      localStorage.setItem('logosnap_credits', '5');
+      localStorage.setItem('logosnap_paid', 'true');
       onPaymentSuccess();
     }, 2000);
   };
-
-  const features = [
-    { icon: Sparkles, text: "Generate 5 premium logos", highlight: true },
-    { icon: Zap, text: "Instant AI-powered creation" },
-    { icon: Shield, text: "Commercial usage rights" },
-    { icon: Crown, text: "Premium quality outputs" }
-  ];
 
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="glass-card rounded-3xl p-8 max-w-sm mx-auto text-black shadow-2xl relative overflow-hidden"
+      className="rounded-3xl p-6 mx-4 text-black shadow-2xl max-w-sm mx-auto"
+      style={{
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)'
+      }}
     >
-      {/* Premium ambient background effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-yellow-50/30 to-orange-50/30 pointer-events-none" />
-      
-      {/* Floating sparkle particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-yellow-400 rounded-full opacity-30"
-            style={{
-              left: `${20 + (i * 15)}%`,
-              top: `${10 + (i * 12)}%`,
-            }}
-            animate={{
-              opacity: [0.2, 0.8, 0.2],
-              scale: [0.5, 1.2, 0.5],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 3 + (i * 0.5),
-              repeat: Infinity,
-              delay: i * 0.8,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8 relative z-10"
-      >
+      <div className="text-center">
+        {/* Icon */}
         <motion.div
-          animate={{ rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="inline-block mb-4"
+          animate={{ 
+            rotateY: [0, 360],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ 
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-yellow-500/50"
+          style={{
+            background: 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00)'
+          }}
         >
-          <Crown className="w-12 h-12 text-yellow-600 mx-auto" />
+          <Sparkles className="w-8 h-8 text-black" />
         </motion.div>
-        
-        <h2 className="text-2xl font-black mb-2 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-          Unlock Premium Logos
-        </h2>
-        
-        <p className="text-gray-600 font-medium">
-          Professional AI-generated logos for your brand
-        </p>
-      </motion.div>
 
-      {/* Features List */}
-      <div className="space-y-4 mb-8 relative z-10">
-        {features.map((feature, index) => {
-          const Icon = feature.icon;
-          return (
+        {/* Headline */}
+        <h2 className="text-2xl font-black mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+          Unlock AI Logo Magic
+        </h2>
+
+        {/* Features */}
+        <div className="space-y-2 mb-6">
+          {[
+            "5 custom logo generations",
+            "20 logos (4 per generation)",
+            "AI-powered design creation", 
+            "SVG & PNG premium downloads",
+            "Commercial usage rights"
+          ].map((feature, index) => (
             <motion.div
-              key={index}
+              key={feature}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 * index }}
-              className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${
-                feature.highlight 
-                  ? 'bg-yellow-50 border border-yellow-200' 
-                  : 'hover:bg-gray-50'
-              }`}
+              transition={{ delay: index * 0.1 }}
+              className="flex items-center justify-center space-x-2"
             >
-              <motion.div
-                animate={feature.highlight ? { scale: [1, 1.1, 1] } : {}}
-                transition={{ duration: 2, repeat: Infinity }}
-                className={`p-2 rounded-full ${
-                  feature.highlight 
-                    ? 'bg-gradient-to-r from-yellow-400 to-orange-400' 
-                    : 'bg-gray-100'
-                }`}
+              <div 
+                className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00)'
+                }}
               >
-                <Icon className={`w-4 h-4 ${
-                  feature.highlight ? 'text-white' : 'text-gray-600'
-                }`} />
-              </motion.div>
-              
-              <span className={`font-medium ${
-                feature.highlight ? 'text-gray-900' : 'text-gray-700'
-              }`}>
-                {feature.text}
-              </span>
+                <Check className="w-3 h-3 text-black" />
+              </div>
+              <span className="text-gray-700 font-medium text-sm">{feature}</span>
             </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Pricing */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.3 }}
-        className="text-center mb-6 relative z-10"
-      >
-        <div className="relative inline-block">
-          <motion.div
-            animate={{
-              boxShadow: [
-                '0 0 0 0px rgba(255, 193, 7, 0.3)',
-                '0 0 0 10px rgba(255, 193, 7, 0.1)',
-                '0 0 0 0px rgba(255, 193, 7, 0.3)'
-              ]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="absolute inset-0 rounded-2xl"
-          />
-          
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-6 py-3 rounded-2xl relative">
-            <div className="text-3xl font-black">$4.99</div>
-            <div className="text-sm font-bold opacity-80">Only 25¢ per logo!</div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Payment Button */}
-      <motion.button
-        onClick={handlePayment}
-        disabled={isProcessing}
-        className="relative w-full py-4 text-lg font-bold rounded-2xl gold-bg text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 overflow-hidden group"
-        whileTap={{ scale: 0.98 }}
-      >
-        {/* Premium gradient sweep effect */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-orange-300 to-yellow-300 opacity-0 group-hover:opacity-40"
-          animate={{
-            x: ['-100%', '100%']
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-
-        {/* Enhanced sparkle particles */}
-        <div className="absolute inset-0 pointer-events-none">
-          {[...Array(4)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full"
-              style={{
-                left: `${20 + (i * 20)}%`,
-                top: `${30 + (i % 2 * 40)}%`,
-              }}
-              animate={{
-                opacity: [0, 1, 0],
-                scale: [0, 1.5, 0],
-                rotate: [0, 180, 360],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.5,
-              }}
-            />
           ))}
         </div>
 
-        {/* Button content */}
-        <div className="relative z-10">
-          {isProcessing ? (
-            <div className="flex items-center justify-center space-x-2">
-              <motion.div 
-                className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              />
-              <span>Processing...</span>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center space-x-2">
-              <motion.div
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Sparkles className="w-5 h-5" />
-              </motion.div>
-              <span>Start Creating Now</span>
-            </div>
-          )}
+        {/* Price Breakdown */}
+        <div className="text-center mb-6">
+          <div className="text-4xl font-black text-gray-900 mb-1">
+            $4.99
+          </div>
+          <div 
+            className="font-bold text-lg mb-2"
+            style={{
+              background: 'linear-gradient(135deg, #FF8C00, #FF8C00)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            Only 25 cents a logo!
+          </div>
+          <div className="text-gray-600 font-medium text-sm">
+            One-time payment • No subscription
+          </div>
         </div>
-      </motion.button>
 
-      {/* Trust indicators */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="text-center mt-4 text-xs text-gray-500 relative z-10"
-      >
-        <div className="flex items-center justify-center space-x-4">
-          <div className="flex items-center space-x-1">
-            <Shield className="w-3 h-3" />
-            <span>Secure</span>
-          </div>
-          <div className="w-1 h-1 bg-gray-300 rounded-full" />
-          <div className="flex items-center space-x-1">
-            <Zap className="w-3 h-3" />
-            <span>Instant</span>
-          </div>
-          <div className="w-1 h-1 bg-gray-300 rounded-full" />
-          <span>No subscription</span>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
+        {/* CTA Button */}
+        <Button
+          onClick={handlePayment}
