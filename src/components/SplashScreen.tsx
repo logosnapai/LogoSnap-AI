@@ -42,7 +42,7 @@ export default function SplashScreen({ onComplete }) {
           className="relative z-10"
         >
           <img 
-            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68854b897f488e0906a65bb3/cb1952ec5_LogoSnapAI1024x1024Logo.png"
+            src="/src/assets/logo-transparent.png"
             alt="LogoSnap AI"
             className="w-32 h-32 rounded-3xl shadow-2xl"
           />
