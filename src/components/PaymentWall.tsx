@@ -1,45 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, CreditCard, Check } from "lucide-react";
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Sparkles, CreditCard, Check } from "lucide-react";
 
 // Inline Button component for bulletproof architecture
-const Button = ({ children, onClick, disabled, className = "", style = {}, ...props }) => {
-@@ -122,151 +119,6 @@ export default function PaymentWall({ onPaymentSuccess }) {
-          </div>
-        </div>
-
-        {/* CTA Button */}
-        <Button
-          onClick={handlePayment}
-          disabled={isProcessing}
-          className="w-full py-3 text-base font-medium rounded-2xl text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105"
-          style={{
-            background: 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00)'
-          }}
-        >
-          {isProcessing ? (
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-              <span>Processing...</span>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center space-x-2">
-              <CreditCard className="w-4 h-4" />
-              <span>Get 5 Logo Generations</span>
-            </div>
-          )}
-        </Button>
-
-        <p className="text-xs text-gray-500 mt-3">
-          Secure Checkout
-        </p>
-      </div>
-    </motion.div>
-  );
-} bulletproof architecture
 const Button = ({ children, onClick, disabled, className = "", style = {}, ...props }) => {
   return (
     <button 
@@ -140,16 +103,28 @@ export default function PaymentWall({ onPaymentSuccess }) {
           <div className="text-4xl font-black text-gray-900 mb-1">
             $4.99
           </div>
-          <div 
-            className="font-bold text-lg mb-2"
-            style={{
-              background: 'linear-gradient(135deg, #FF8C00, #FF8C00)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}
-          >
-            Only 25 cents a logo!
+          <div className="relative font-bold text-lg mb-2 overflow-hidden">
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent"
+              animate={{
+                x: ['-100%', '100%']
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              style={{
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              Only 25 cents a logo!
+            </motion.div>
+            <div className="text-orange-500 font-bold text-lg">
+              Only 25 cents a logo!
+            </div>
           </div>
           <div className="text-gray-600 font-medium text-sm">
             One-time payment • No subscription
@@ -159,3 +134,29 @@ export default function PaymentWall({ onPaymentSuccess }) {
         {/* CTA Button */}
         <Button
           onClick={handlePayment}
+          disabled={isProcessing}
+          className="w-full py-3 text-base font-medium rounded-2xl text-black hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00)'
+          }}
+        >
+          {isProcessing ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              <span>Processing...</span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center space-x-2">
+              <CreditCard className="w-4 h-4" />
+              <span>Get 5 Logo Generations</span>
+            </div>
+          )}
+        </Button>
+
+        <p className="text-xs text-gray-500 mt-3">
+          Secure Checkout
+        </p>
+      </div>
+    </motion.div>
+  );
+}
