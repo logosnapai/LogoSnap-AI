@@ -144,7 +144,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
             </div>
           ) : (
             <div className="flex items-center justify-center space-x-2">
-              <CreditCard className="w-4 h-4" />
+              <Sparkles className="w-4 h-4" />
               <span>Get 5 Logo Generations</span>
             </div>
           )}
