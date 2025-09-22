@@ -103,29 +103,26 @@ export default function PaymentWall({ onPaymentSuccess }) {
           <div className="text-4xl font-black text-gray-900 mb-1">
             $4.99
           </div>
-          <div className="relative font-bold text-lg mb-2 overflow-hidden">
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent"
-              animate={{
-                x: ['-100%', '100%']
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              style={{
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}
-            >
-              Only 25 cents a logo!
-            </motion.div>
-            <div className="text-orange-500 font-bold text-lg">
-              Only 25 cents a logo!
-            </div>
-          </div>
+          <motion.div 
+            className="font-bold text-lg mb-2"
+            style={{
+              background: 'linear-gradient(90deg, #FFD700, #FF8C00, #FFD700, #FF8C00)',
+              backgroundSize: '200% 100%',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+            animate={{
+              backgroundPosition: ['0% 0%', '100% 0%']
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          >
+            Only 25 cents a logo!
+          </motion.div>
           <div className="text-gray-600 font-medium text-sm">
             One-time payment • No subscription
           </div>
