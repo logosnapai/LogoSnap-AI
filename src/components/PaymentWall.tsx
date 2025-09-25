@@ -104,7 +104,13 @@ export default function PaymentWall({ onPaymentSuccess }) {
             $4.99
           </div>
           <div 
-            className="font-bold text-lg mb-2 text-orange-600"
+            className="font-bold text-lg mb-2"
+            style={{
+              background: 'linear-gradient(135deg, #FFA500, #FF8C00)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
           >
             Only 25 cents a logo!
           </div>
@@ -129,7 +135,7 @@ export default function PaymentWall({ onPaymentSuccess }) {
             </div>
           ) : (
             <div className="flex items-center justify-center space-x-2">
-              <Sparkles className="w-4 h-4" />
+              <CreditCard className="w-4 h-4" />
               <span>Get 5 Logo Generations</span>
             </div>
           )}
