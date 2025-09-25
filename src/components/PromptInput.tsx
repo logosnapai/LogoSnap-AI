@@ -34,7 +34,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
         </h2>
         <div className="flex items-center justify-center space-x-2 text-sm">
           <Sparkles className="w-4 h-4 text-yellow-500" />
-          <span className="text-yellow-500 font-bold drop-shadow-[0_0_8px_rgba(234,179,8,0.6)] animate-pulse">
+          <span className="text-yellow-500 font-medium">
             Credits Remaining: {creditsRemaining}/5
           </span>
         </div>
@@ -78,61 +78,63 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
             />
           )}
 
-          {/* Enhanced Sparkle Particles */}
-          <div className="absolute inset-0 pointer-events-none">
-            <motion.div
-              className="absolute top-2 left-4 w-1.5 h-1.5 bg-white rounded-full"
-              animate={{
-                opacity: [0, 1, 0],
-                scale: [0, 1.2, 0],
-                rotate: [0, 180, 360],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                delay: 0,
-              }}
-            />
-            <motion.div
-              className="absolute top-4 right-6 w-1 h-1 bg-white rounded-full"
-              animate={{
-                opacity: [0, 1, 0],
-                scale: [0, 1, 0],
-                rotate: [0, -180, -360],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: 0.7,
-              }}
-            />
-            <motion.div
-              className="absolute bottom-3 left-8 w-0.5 h-0.5 bg-white rounded-full"
-              animate={{
-                opacity: [0, 1, 0],
-                scale: [0, 1.5, 0],
-                rotate: [0, 360, 720],
-              }}
-              transition={{
-                duration: 1.8,
-                repeat: Infinity,
-                delay: 1.2,
-              }}
-            />
-            <motion.div
-              className="absolute bottom-2 right-4 w-1 h-1 bg-white rounded-full"
-              animate={{
-                opacity: [0, 1, 0],
-                scale: [0, 1.3, 0],
-                rotate: [0, -90, -180],
-              }}
-              transition={{
-                duration: 2.3,
-                repeat: Infinity,
-                delay: 1.8,
-              }}
-            />
-          </div>
+          {/* Enhanced Sparkle Particles - only when generating */}
+          {isGenerating && (
+            <div className="absolute inset-0 pointer-events-none">
+              <motion.div
+                className="absolute top-2 left-4 w-1.5 h-1.5 bg-white rounded-full"
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0, 1.2, 0],
+                  rotate: [0, 180, 360],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  delay: 0,
+                }}
+              />
+              <motion.div
+                className="absolute top-4 right-6 w-1 h-1 bg-white rounded-full"
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0, 1, 0],
+                  rotate: [0, -180, -360],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: 0.7,
+                }}
+              />
+              <motion.div
+                className="absolute bottom-3 left-8 w-0.5 h-0.5 bg-white rounded-full"
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0, 1.5, 0],
+                  rotate: [0, 360, 720],
+                }}
+                transition={{
+                  duration: 1.8,
+                  repeat: Infinity,
+                  delay: 1.2,
+                }}
+              />
+              <motion.div
+                className="absolute bottom-2 right-4 w-1 h-1 bg-white rounded-full"
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0, 1.3, 0],
+                  rotate: [0, -90, -180],
+                }}
+                transition={{
+                  duration: 2.3,
+                  repeat: Infinity,
+                  delay: 1.8,
+                }}
+              />
+            </div>
+          )}
 
           {/* Button content with enhanced animations */}
           <motion.div 
@@ -153,12 +155,7 @@ export default function PromptInput({ onGenerate, isGenerating, creditsRemaining
               <span>Out of Credits</span>
             ) : (
               <div className="flex items-center justify-center space-x-2">
-                <motion.div
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <Sparkles className="w-5 h-5" />
-                </motion.div>
+                <Sparkles className="w-5 h-5" />
                 <span>Generate Logos</span>
               </div>
             )}
